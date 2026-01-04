@@ -30,7 +30,7 @@ dirs = os.getcwd()
 right_column.image('./hospital.png', caption='', width=100)
 
 # 创建一个侧边栏
-st.sidebar.header('输入参数')
+st.sidebar.header('Input parameters')
 #vars =[ "address" ,"weight" ,"kidney_diseases","Sleep_time" ,"Pain" ]
 # Input bar 1
 a = st.sidebar.number_input(vars[0]+"(1-rural areas,2-urban)",min_value=1 ,max_value=2,value=1)
@@ -71,7 +71,7 @@ if st.sidebar.button("Submit"):
 
 
     # Output prediction
-    st.text(f"The probability of GradientBoost is: {str(result_prob_pos)}%")
+    st.text(f"The probability of Random_Froest is: {str(result_prob_pos)}%")
 
 
     # 创建一个新的DataFrame来存储用户输入的数据
