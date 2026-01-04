@@ -30,7 +30,7 @@ dirs = os.getcwd()
 right_column.image('./hospital.png', caption='', width=100)
 
 # 创建一个侧边栏
-st.sidebar.header('Input parameters')
+st.sidebar.header('Inputparameters')
 #vars =[ "address" ,"weight" ,"kidney_diseases","Sleep_time" ,"Pain" ]
 # Input bar 1
 a = st.sidebar.number_input(vars[0]+"(1-rural areas,2-urban)",min_value=1 ,max_value=2,value=1)
