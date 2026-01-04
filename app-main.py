@@ -71,7 +71,7 @@ if st.sidebar.button("Submit"):
 
 
     # Output prediction
-    st.text(f"The probability of GradientBoost is: {str(result_prob_pos)}%")
+    st.text(f"The probability of Random_Forest is: {str(result_prob_pos)}%")
 
 
     # 创建一个新的DataFrame来存储用户输入的数据
