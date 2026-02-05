@@ -15,7 +15,7 @@ if 'data' not in st.session_state:
         columns=[vars[0], vars[1], vars[2], vars[3] ,vars[4] ,'Prediction Label' ,'Label'])
 
 # 在主页面上显示数据
-st.header('Depression risk of adult patients with heart diseases based on SF')
+st.header('Depression risk of adult patients with heart diseases based on RF')
 
 # 创建两列布局
 left_column, col1, col2, col3, right_column = st.columns(5)
