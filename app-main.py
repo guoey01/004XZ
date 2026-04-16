@@ -6,16 +6,16 @@ import joblib
 import shap
 
 # 输入所有建模参数
-vars =[ "address" ,"weight" ,"kidney_diseases","Sleep_time" ,"Pain" ]
+vars =[ "address" ,"grip_max" ,"Sleep_time" ,"Pain" ]
 
 # 初始化 session_state 中的 data
 # 创建一个空的DataFrame来存储预测数据
 if 'data' not in st.session_state:
     st.session_state['data'] = pd.DataFrame(
-        columns=[vars[0], vars[1], vars[2], vars[3] ,vars[4] ,'Prediction Label' ,'Label'])
+        columns=[vars[0], vars[1], vars[2], vars[3]  ,'Prediction Label' ,'Label'])
 
 # 在主页面上显示数据
-st.header('Depression risk of adult patients with heart diseases based on RF')
+st.header('Depression risk of adult patients with heart diseases based on logistic regression')
 
 # 创建两列布局
 left_column, col1, col2, col3, right_column = st.columns(5)
@@ -31,22 +31,21 @@ right_column.image('./hospital.png', caption='', width=100)
 
 # 创建一个侧边栏
 st.sidebar.header('Input parameters')
-#vars =[ "address" ,"weight" ,"kidney_diseases","Sleep_time" ,"Pain" ]
+#vars =[ "address" ,"grip_max" ,"Sleep_time" ,"Pain" ]
 # Input bar 1
 a = st.sidebar.number_input(vars[0]+"(1-rural areas,2-urban)",min_value=1 ,max_value=2,value=1)
 b = st.sidebar.number_input(vars[1]+"(kg)" ,min_value=0.0 ,value=0.0)
-c = st.sidebar.number_input(vars[2]+"(0-No,1-Yes)" ,min_value=0 ,max_value=1,value=0)
-d = st.sidebar.number_input(vars[3]+"(h)" ,min_value=0.0 ,value=0.0)
-e = st.sidebar.number_input(vars[4]+"(0-No,1-Yes)" ,min_value=0 ,max_value=1,value=0)
+c = st.sidebar.number_input(vars[2]+"(h)" ,min_value=0.0 ,value=0.0)
+d = st.sidebar.number_input(vars[3]+"(0-No,1-Yes)" ,min_value=0 ,max_value=1,value=0)
 
 # Unpickle classifier
-mm = joblib.load('./random_forest.pkl')
+mm = joblib.load('./logistic_regression.pkl')
 
 # If button is pressed
 if st.sidebar.button("Submit"):
     # Store inputs into dataframe
-    X = pd.DataFrame([[a, b, c ,d ,e ]],
-                     columns=[vars[0], vars[1], vars[2], vars[3] ,vars[4] ])
+    X = pd.DataFrame([[a, b, c ,d  ]],
+                     columns=[vars[0], vars[1], vars[2], vars[3] ])
 
     # Get prediction
     for index, row in X.iterrows():
@@ -65,17 +64,15 @@ if st.sidebar.button("Submit"):
         else:
             # result_prob_pos = round(float(strlist[1]) * 100, 2)  # 预测概率
             result_prob_pos = float(strlist[1])  # 预测概率
-    explainer = shap.TreeExplainer(mm)
-    shap_values = explainer.shap_values(data2)
-    shap_values = shap_values.reshape((1, -1))
+
 
 
     # Output prediction
-    st.text(f"The probability of Random_Froest is: {str(result_prob_pos)}%")
+    st.text(f"The probability of logistic_regression is: {str(result_prob_pos)}%")
 
 
     # 创建一个新的DataFrame来存储用户输入的数据
-    new_data = pd.DataFrame([[a, b, c ,d ,e ,result_prob_pos, None]],
+    new_data = pd.DataFrame([[a, b, c ,d,result_prob_pos, None]],
                             columns=st.session_state['data'].columns)
 
     # 将预测结果添加到新数据中
@@ -93,8 +90,7 @@ if uploaded_file is not None:
         vars[0]: vars[0],
         vars[1]: vars[1],
         vars[2]: vars[2],
-        vars[3]: vars[3],
-        vars[4]: vars[4]
+        vars[3]: vars[3]
     }
 
     # 假设 'Label' 列在 Excel 文件中存在并且不参与计算
@@ -104,7 +100,7 @@ if uploaded_file is not None:
     df = df.rename(columns=column_mapping)
 
     # 检查是否所有必需的列都存在
-    missing_cols = [col for col in [vars[0], vars[1], vars[2], vars[3] ,vars[4] ] if
+    missing_cols = [col for col in [vars[0], vars[1], vars[2], vars[3]  ] if
                     col not in df.columns]
 
     if missing_cols:
@@ -114,7 +110,7 @@ if uploaded_file is not None:
         for _, row in df.iterrows():
             # 提取每一行数据并转换为模型输入格式
             X = pd.DataFrame([row],
-                             columns=[vars[0], vars[1], vars[2], vars[3] ,vars[4] ])
+                             columns=[vars[0], vars[1], vars[2], vars[3]  ])
 
             # 进行预测
             result = mm.predict(X)[0]
@@ -124,7 +120,7 @@ if uploaded_file is not None:
             label = row[label_column] if label_column in row else None
 
             # 将结果添加到 session_state 的 data 中
-            new_data = pd.DataFrame([[row[vars[0]], row[vars[1]], row[vars[2]] ,row[vars[3]] ,row[vars[4]]
+            new_data = pd.DataFrame([[row[vars[0]], row[vars[1]], row[vars[2]] ,row[vars[3]]
                                       ,result_prob, label]],
                                     columns=st.session_state['data'].columns)
             st.session_state['data'] = pd.concat([st.session_state['data'], new_data], ignore_index=True)
@@ -137,5 +133,5 @@ st.write(st.session_state['data'])
 st.write(
     "<p style='font-size: 12px;'>Disclaimer: This mini app is designed to provide general information and is not a substitute for professional medical advice or diagnosis. Always consult with a qualified healthcare professional if you have any concerns about your health.</p>",
     unsafe_allow_html=True)
-st.markdown('<div style="font-size: 12px; text-align: right;">Powered by MyLab+ i-Research Consulting Team</div>',
+st.markdown('<div style="font-size: 12px; text-align: right;">Powered by MyLab+X i-Research Q Consulting Team</div>',
             unsafe_allow_html=True )
